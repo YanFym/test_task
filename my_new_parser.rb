@@ -12,6 +12,8 @@ class MyNewParser
     write_to_csv_file
   end
 
+  private
+
   def fetch_pages_count
     first_page = Nokogiri::HTML(Curl.get(ALL_INFORMATION).body_str)
     first_page.xpath('//div[2]/div/div/div/div[1]/div[2]/span').text.match(/\d+/)[0].to_i / 20 + 1  
