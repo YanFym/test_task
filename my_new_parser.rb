@@ -8,8 +8,8 @@ END_CSV_FILE = ARGV.last
 
 def parse_product(product_url)
   page = Nokogiri::HTML(open(product_url))
-  image_src = page.css('#bigpic').last['src']
-  product_name = page.css('h1').last.content.strip
+  image_src = page.xpath('//div/div/div/div/div/span/img/@src').text
+  product_name = page.xpath('//h1').text
   page.css('.attribute_labels_lists').map do |line|
     [
       "#{product_name} -- #{line.css('.attribute_name').last.content.strip}",
@@ -20,11 +20,10 @@ def parse_product(product_url)
 end
 
 first_page = Nokogiri::HTML(open(ALL_INFORMATION))
-pages_count = first_page.css('.heading-counter').last.content.match(/\d+/)[0].to_i / 20 + 1
+pages_count = pages_count = first_page.xpath('//div[2]/div/div/div/div[1]/div[2]/span').text.match(/\d+/)[0].to_i / 20 + 1
 product_urls = []
 
 pages_count.times do |page_number|
-
   page = Nokogiri::HTML(open("#{ALL_INFORMATION}?p=#{page_number + 1}"))
   product_urls += page.css('.product_img_link').map { |link| link['href'] }
 end
